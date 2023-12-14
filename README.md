@@ -1,5 +1,6 @@
 # Simple Event-Driven Microservice Architecture in Rust
-
+![build and testing](https://github.com/Jamesmallon1/rust-simple-event-driven-microservices/actions/workflows/main-ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/Jamesmallon1/rust-simple-event-driven-microservices/graph/badge.svg?token=L63B8SPPYJ)](https://codecov.io/gh/Jamesmallon1/rust-simple-event-driven-microservices)
 ## Overview
 "Simple Event-Driven Microservice Architecture in Rust" is an open-source project showcasing the simplicity and efficiency of building microservices in Rust. This minimalistic project demonstrates an e-commerce backend system, featuring just two microservices: Catalog and Order.
 
@@ -62,7 +63,8 @@ Once the server is operational, you can interact with the microservices through 
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests or open issues for improvements and suggestions.
-Prior to contributing please ensure you read CONTRIBUTING.md.
+Prior to contributing please ensure you read [CONTRIBUTING.md](CONTRIBUTING.md)
+
 
 ## License
 This project is open source and available under MIT.

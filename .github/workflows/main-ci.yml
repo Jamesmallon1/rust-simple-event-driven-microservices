@@ -1,4 +1,4 @@
-name: Rust Coverage
+name: Build & Testing
 
 on:
   push:
