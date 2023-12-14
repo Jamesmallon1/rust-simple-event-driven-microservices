@@ -1,0 +1,40 @@
+name: Rust Coverage
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev pkg-config cmake
+          rustup component add llvm-tools-preview
+
+      - name: Run cargo llvm-cov
+        run: |
+          cargo llvm-cov --lcov --output-path target/lcov.info --workspace
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./target/lcov.info
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
