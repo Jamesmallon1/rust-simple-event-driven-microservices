@@ -1,5 +1,5 @@
 # Simple Event-Driven Microservice Architecture in Rust
-[.gitignore](..%2FPersonal%2Frust-simple-event-driven-microservices%2F.gitignore)
+
 ## Overview
 "Simple Event-Driven Microservice Architecture in Rust" is an open-source project showcasing the simplicity and efficiency of building microservices in Rust. This minimalistic project demonstrates an e-commerce backend system, featuring just two microservices: Catalog and Order.
 
