@@ -6,7 +6,7 @@
 ## Getting Started
 
 ### Prerequisites
-To run this project, ensure you have the following installed:
+During the installation steps you will install the following dependencies when running install_prerequisites_macos.sh
 - Rust
 - Brew
 - Java
