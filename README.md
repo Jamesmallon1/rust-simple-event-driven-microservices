@@ -63,7 +63,8 @@ Once the server is operational, you can interact with the microservices through 
 
 ## Contributing
 Contributions are welcome! Please feel free to submit pull requests or open issues for improvements and suggestions.
-Prior to contributing please ensure you read [CONTRIBUTING.md](CONTRIBUTING.md)
+
+Prior to contributing please ensure you read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
 ## License
