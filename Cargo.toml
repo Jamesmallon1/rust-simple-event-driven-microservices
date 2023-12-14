@@ -1,0 +1,9 @@
+[workspace]
+resolver = "2"
+members = [
+    "catalog_service",
+    "order_service",
+    "common",
+    "event_bus",
+    "networking"
+]
