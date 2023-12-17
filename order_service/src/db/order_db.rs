@@ -95,6 +95,31 @@ impl<'a> OrderDb<'a> for OrderDbClient {
     }
 }
 
+// mocks
+pub struct MockOrderDb {
+    expected_order: Option<Order>,
+}
+
+impl<'a> OrderDb<'a> for MockOrderDb {
+    fn new() -> Self {
+        MockOrderDb { expected_order: None }
+    }
+
+    #[allow(unused_variables)]
+    fn add_order(&mut self, order_request: OrderRequest) {}
+
+    #[allow(unused_variables)]
+    fn get_order(&'a self, order_id: u32) -> Option<&'a Order> {
+        self.expected_order.as_ref()
+    }
+}
+
+impl MockOrderDb {
+    pub fn set_expected_order(&mut self, order: Option<Order>) {
+        self.expected_order = order;
+    }
+}
+
 /// Represents an order in the order database.
 ///
 /// This struct encapsulates the details of an order, including its ID,

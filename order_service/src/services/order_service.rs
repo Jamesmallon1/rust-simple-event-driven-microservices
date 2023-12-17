@@ -108,7 +108,110 @@ impl<E: EventProducer, D: for<'a> OrderDb<'a>, C: CatalogNetworkService> OrderSe
     }
 }
 
+#[derive(PartialEq)]
 pub enum PlaceOrderError {
     ItemOutOfStock,
     CatalogNetworkError,
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::db::order_db::{MockOrderDb, Order};
+    use crate::networking::catalog_network_service::MockCatalogNetworkService;
+    use event_bus::*;
+    use networking::{NetworkError, NetworkErrorType};
+
+    fn generate_random_order() -> Order {
+        Order::new(
+            1,
+            OrderRequest {
+                item_id: 1,
+                name: "something".to_string(),
+                address: "hello".to_string(),
+                quantity: 22,
+            },
+        )
+    }
+
+    fn generate_random_order_request() -> OrderRequest {
+        OrderRequest {
+            item_id: 1,
+            name: "something".to_string(),
+            address: "hello".to_string(),
+            quantity: 22,
+        }
+    }
+
+    #[test]
+    fn test_new_order_service() {
+        // prepare
+        let mock_event_listener = MockEventBus::new();
+        let mut mock_order_db = MockOrderDb::new();
+        let mock_catalog_network_service = MockCatalogNetworkService::new();
+        mock_order_db.set_expected_order(Some(generate_random_order()));
+
+        // act
+        let sut = OrderService::new(mock_order_db, mock_event_listener, mock_catalog_network_service);
+
+        // assert that db is mocked and accessible to confirm initialization
+        assert_eq!(
+            sut.db.lock().unwrap().get_order(1).unwrap().address,
+            "hello".to_string()
+        );
+    }
+
+    #[tokio::test]
+    async fn test_place_order_catalog_network_error() {
+        // prepare
+        let mock_event_listener = MockEventBus::new();
+        let mock_order_db = MockOrderDb::new();
+        let mut mock_catalog_network_service = MockCatalogNetworkService::new();
+        mock_catalog_network_service.expect_get_stock().return_once(move |_| {
+            Err(NetworkError {
+                status_code: Some(500),
+                error: NetworkErrorType::Standard,
+            })
+        });
+        let sut = OrderService::new(mock_order_db, mock_event_listener, mock_catalog_network_service);
+
+        // act
+        let result = sut.place_order(&generate_random_order_request()).await;
+
+        // assert
+        assert!(result.is_err());
+        assert!(result.unwrap_err() == PlaceOrderError::CatalogNetworkError)
+    }
+
+    #[tokio::test]
+    async fn test_place_order_item_out_of_stock_error() {
+        // prepare
+        let mock_event_listener = MockEventBus::new();
+        let mock_order_db = MockOrderDb::new();
+        let mut mock_catalog_network_service = MockCatalogNetworkService::new();
+        mock_catalog_network_service.expect_get_stock().return_once(move |_| Ok(21));
+        let sut = OrderService::new(mock_order_db, mock_event_listener, mock_catalog_network_service);
+
+        // act
+        let result = sut.place_order(&generate_random_order_request()).await;
+
+        // assert
+        assert!(result.is_err());
+        assert!(result.unwrap_err() == PlaceOrderError::ItemOutOfStock)
+    }
+
+    #[tokio::test]
+    async fn test_place_order_success() {
+        // prepare
+        let mock_event_listener = MockEventBus::new();
+        let mock_order_db = MockOrderDb::new();
+        let mut mock_catalog_network_service = MockCatalogNetworkService::new();
+        mock_catalog_network_service.expect_get_stock().return_once(move |_| Ok(25));
+        let sut = OrderService::new(mock_order_db, mock_event_listener, mock_catalog_network_service);
+
+        // act
+        let result = sut.place_order(&generate_random_order_request()).await;
+
+        // assert
+        assert!(result.is_ok());
+    }
 }

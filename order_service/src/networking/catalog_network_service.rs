@@ -21,6 +21,7 @@ pub struct CatalogApiClient {
 }
 
 /// Defines network service operations for interacting with the Catalog Microservice.
+#[mockall::automock]
 #[async_trait]
 pub trait CatalogNetworkService {
     /// Asynchronously retrieves the amount of stock available for a specific clothing item.

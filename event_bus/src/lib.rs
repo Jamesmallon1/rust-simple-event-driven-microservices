@@ -7,6 +7,7 @@ use rdkafka::error::KafkaError;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::ClientConfig;
 use serde::de::DeserializeOwned;
+use serde::Serialize;
 use std::error::Error;
 use std::time::Duration;
 
@@ -262,6 +263,23 @@ impl EventListener for MockEventBus {
             Err(Box::new(KafkaError::Canceled) as Box<dyn Error>)
         } else {
             Ok(KafkaListener::mock())
+        };
+    }
+}
+
+#[async_trait]
+impl EventProducer for MockEventBus {
+    #[allow(unused_variables)]
+    async fn broadcast_event<T: Serialize + Send>(
+        &self,
+        payload: T,
+        topic_name: &str,
+        key: &str,
+    ) -> Result<(), Box<dyn Error>> {
+        return if self.produces_error {
+            Err(Box::new(KafkaError::Canceled) as Box<dyn Error>)
+        } else {
+            Ok(())
         };
     }
 }

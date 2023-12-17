@@ -3,6 +3,7 @@ use reqwest::header::HeaderMap;
 use reqwest::Client;
 
 use std::collections::HashMap;
+use std::sync::Arc;
 
 /// Executes a Standard RESTful GET request over the network. This method can only be accessed within the networking
 /// crate. A developer should create simple network level services that prepare data for these base functions.
